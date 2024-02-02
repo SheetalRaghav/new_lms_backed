@@ -8,6 +8,7 @@ const connect = require("./db/db");
 app.use(bodyParser.json());
 connect();
 app.use("/auth", require("./routes/auth"));
+app.use("/category", require("./routes/category"));
 app.get("/", (req, res) => {
   res.send("Hey everyone!");
 });
