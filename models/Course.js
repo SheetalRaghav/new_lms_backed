@@ -10,7 +10,14 @@ let CourseSchema = new Schema({
     type: String,
     required: true,
   },
-  categoryId: [{ type: Schema.Types.ObjectId, ref: 'Category' }]
+  status: {
+    type: String,
+    enum: ["Approved", "Pending", "Rejected"],
+    required: true,
+  },
+  data: [],
+  categoryId: { type: Schema.Types.ObjectId, ref: "Category" },
+  userId: { type: Schema.Types.ObjectId, ref: "User" },
 });
 
 module.exports = mongoose.model("Course", CourseSchema);

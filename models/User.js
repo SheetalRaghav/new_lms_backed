@@ -20,11 +20,11 @@ let UserSchema = mongoose.Schema({
   blocked: {
     type: Boolean,
     required: true,
-    default: false
+    default: false,
   },
   date: {
     type: Date,
     default: Date.now,
   },
 });
-module.exports = mongoose.model("user", UserSchema);
+module.exports = mongoose.model("User", UserSchema);
