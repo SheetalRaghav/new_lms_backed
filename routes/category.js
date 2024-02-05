@@ -27,17 +27,15 @@ router.post("/add-category", fetchUser, async (req, res) => {
       hour12: true,
     });
 
-    res
-      .status(201)
-      .json({
-        success: true,
-        newCategory: {
-          title: newCategory.title,
-          _id: newCategory._id,
-          date: formattedDate,
-          __v: newCategory.__v,
-        },
-      });
+    res.status(201).json({
+      success: true,
+      newCategory: {
+        title: newCategory.title,
+        _id: newCategory._id,
+        date: formattedDate,
+        __v: newCategory.__v,
+      },
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success, error: "Internal server error" });
@@ -68,9 +66,9 @@ router.patch("/edit-category", fetchUser, async (req, res) => {
   }
 });
 
-router.delete("/delete-category", fetchUser, async (req, res) => {
+router.delete("/delete-category/:id", fetchUser, async (req, res) => {
   try {
-    const { identity } = req.body;
+    const identity = req.params.id;
 
     //Find the category by ID
     const category = await Category.findOne({ _id: identity });

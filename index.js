@@ -9,6 +9,7 @@ app.use(bodyParser.json());
 connect();
 app.use("/auth", require("./routes/auth"));
 app.use("/category", require("./routes/category"));
+app.use("/course", require("./routes/course"));
 app.get("/", (req, res) => {
   res.send("Hey everyone!");
 });
