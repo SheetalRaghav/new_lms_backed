@@ -22,6 +22,10 @@ let UserSchema = mongoose.Schema({
     required: true,
     default: false,
   },
+  courses: {
+    type: Array,
+    default: [],
+  },
   date: {
     type: Date,
     default: Date.now,
