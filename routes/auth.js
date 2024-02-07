@@ -195,4 +195,26 @@ router.post("/updateUserRole", fetchUser, async (req, res) => {
   }
 });
 
+router.patch("/updateuser", fetchUser, async (req, res) => {
+  const {userId, courses} = req.body;
+  let success = false;
+  
+  try {
+    await User.findByIdAndUpdate(userId, {
+      courses: courses 
+    })
+      .then(() => {
+        success = true;
+        res.json({ success, message: "User details updated successfully" });
+      })
+      .catch((err) => {
+        success = false;
+        res.json({ success, Error: err.message });
+      });
+  } catch (error) {
+    success = false;
+    res.status(500).json({ success, Error: "Internal server error" });
+  }
+});
+
 module.exports = router;
