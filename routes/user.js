@@ -9,8 +9,8 @@ const { blockUser } = require("../controllers/user");
 const { updateUserRole } = require("../controllers/user");
 const { updateUser } = require("../controllers/user");
 
-router.post("/newuser", createUser);
-router.post("/login", verifyJwtToken, loginUser);
+router.post("/newuser",verifyJwtToken, createUser);
+router.post("/login", loginUser);
 router.get("/getuser", verifyJwtToken, getUser);
 router.get("/fetchallusers", verifyJwtToken, fetchAllUser);
 router.post("/blockuser", verifyJwtToken, blockUser);

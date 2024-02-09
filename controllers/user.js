@@ -1,6 +1,4 @@
 const { userModel } = require("../db/db");
-const { createUserSchema } = require("../requestSchema/user");
-const { loginUserSchema } = require("../requestSchema/user");
 const {
   validationError,
   successResponse,
@@ -10,41 +8,31 @@ const jwt = require("jsonwebtoken");
 
 const createUser = async (req, res) => {
   try {
-    const { error, value } = createUserSchema.validate(req.body, {
-      abortEarly: false,
-    });
-    if (error && error.details) {
-      return res.status(422).json({ errors: error.details });
-    }
+    const { name, email, password, role } = req.body;
+    
     const saltRounds = 10;
-    const passwordHash = await bcrypt.hash(value.password, saltRounds);
+    const passwordHash = await bcrypt.hash(password, saltRounds);
     const newUser = new userModel({
-      ...value,
+      name,
+      email,
       password: passwordHash,
+      role
     });
 
     const user = await newUser.save();
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
     user.token = token;
     await user.save();
-    res.status(201).json(await successResponse({ success: true, user, token }));
+    
+    res.status(201).json({ success: true, user, token });
   } catch (err) {
-    if (err.name === "ValidationError") {
-      return res.status(422).json({ errors: validationError(err) });
-    }
-    res.status(500).json({ success: false, error: err.message });
+    res.status(500).json({ success: false, error: "Internal server error" });
   }
 };
 
 const loginUser = async (req, res) => {
   try {
-    const { error, value } = loginUserSchema.validate(req.body, {
-      abortEarly: false,
-    });
-    if (error && error.details) {
-      return res.status(422).json({ errors: error.details });
-    }
-    const { email, password } = value;
+    const { email, password } = req.body;
 
     const user = await userModel.findOne({ email });
     if (!user) {
@@ -60,12 +48,9 @@ const loginUser = async (req, res) => {
     user.token = token;
     await user.save();
 
-    res.status(200).json(await successResponse({ success: true, user }));
+    res.status(200).json({ success: true, user, token });
   } catch (err) {
-    if (err.name === "ValidationError") {
-      return res.status(422).json({ errors: validationError(err) });
-    }
-    res.status(500).json({ success: false, error: err.message });
+    res.status(500).json({ success: false, error: "Internal server error" });
   }
 };
 
