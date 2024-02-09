@@ -1,10 +1,34 @@
 const mongoose = require("mongoose");
-require("dotenv").config();
 
-async function connect() {
-  const url = `mongodb+srv://lms123:webseeder123@lms.gxvukec.mongodb.net/?retryWrites=true&w=majority`;
-  await mongoose.connect(url).then(() => {
-    console.log("connected successfully");
-  });
-}
-module.exports = connect;
+const { UserSchema } = require("./schema/userSchema");
+const { CourseSchema } = require("./schema/courseSchema");
+const { CategorySchema } = require("./schema/categorySchema");
+
+const connectionUri = `mongodb+srv://lms123:webseeder123@lms.gxvukec.mongodb.net/?retryWrites=true&w=majority`;
+
+mongoose.connect(connectionUri, {
+  useUnifiedTopology: true,
+  autoIndex: true,
+});
+
+const db = mongoose.connection;
+
+db.on("error", (error) => {
+  console.error("MongoDB connection error:", error);
+});
+
+db.once("open", () => {
+  console.log("Connected to MongoDB successfully");
+});
+
+// Model definitions
+const userModel = mongoose.model("Users", UserSchema);
+const courseModel = mongoose.model("Course", CourseSchema);
+const categoryModel = mongoose.model("Category", CategorySchema);
+
+module.exports = {
+  db,
+  userModel,
+  courseModel,
+  categoryModel,
+};
