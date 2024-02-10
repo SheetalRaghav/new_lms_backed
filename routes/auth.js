@@ -104,7 +104,7 @@ router.post("/fetchallusers", fetchUser, async (req, res) => {
         await User.find({})
           .select("-password")
           .then((value) => {
-            res.status(200).json({ value });
+            res.status(200).json({ success: true, value });
           });
       }
     });
