@@ -87,7 +87,7 @@ router.post("/getuser", fetchUser, async (req, res) => {
       .select("-password")
       .then((value) => {
         success = true;
-        res.status(200).json({ value });
+        res.status(200).json({ success: true, value });
       });
   } catch (error) {
     res.status(500).json({ success, Error: "Internal server error" });
@@ -196,12 +196,12 @@ router.post("/updateUserRole", fetchUser, async (req, res) => {
 });
 
 router.patch("/updateuser", fetchUser, async (req, res) => {
-  const {userId, courses} = req.body;
+  const { userId, courses } = req.body;
   let success = false;
-  
+
   try {
     await User.findByIdAndUpdate(userId, {
-      courses: courses 
+      courses: courses,
     })
       .then(() => {
         success = true;
