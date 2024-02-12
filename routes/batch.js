@@ -27,27 +27,29 @@ router.post("/add-batch", fetchUser, async (req, res) => {
     const newBatch = new Batch({
       title,
       courseId: course._id,
-      courseDetails: course,
+      courseDetails: {...course},
     });
 
     console.log(newBatch,"newBatch");
 
-    await newBatch.save();
-
-    const batchWithCourseDetails = {
-      title: newBatch.title,
-      courseId: newBatch.courseId,
-      student: newBatch.student,
-      courseDetails: newBatch.courseDetails, 
-      _id: newBatch._id,
-      date: newBatch.date,
-      __v: newBatch.__v
-    };
-
-    res.status(201).json({
-      success: true,
-      newBatch: batchWithCourseDetails,
+    await newBatch.save().then((value)=>{
+      res.status(201).json({
+        success: true,
+        newBatch: value,
+      });
     });
+
+    // const batchWithCourseDetails = {
+    //   title: newBatch.title,
+    //   courseId: newBatch.courseId,
+    //   student: newBatch.student,
+    //   courseDetails: newBatch.courseDetails, 
+    //   _id: newBatch._id,
+    //   date: newBatch.date,
+    //   __v: newBatch.__v
+    // };
+
+   
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, error: "Internal server error" });

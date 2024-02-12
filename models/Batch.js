@@ -13,7 +13,7 @@ let BatchSchema = new Schema({
     default: Date.now,
   },
   courseDetails:{
-    type: String,
+    type: Object,
     required: true,
   }
 });
