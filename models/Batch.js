@@ -12,6 +12,10 @@ let BatchSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+  courseDetails:{
+    type: String,
+    required: true,
+  }
 });
 
 module.exports = mongoose.model("Batch", BatchSchema);

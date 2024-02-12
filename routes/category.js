@@ -47,19 +47,19 @@ router.patch("/edit-category", fetchUser, async (req, res) => {
     const { identity, newCategory } = req.body;
 
     //Find the category by ID
-    const category = await Category.findOne({ _id: identity });
+    const updateCategory = await Category.findByIdAndUpdate(
+      identity,
+      { title: newCategory },
+      { new: true }
+    );
 
-    if (!category) {
+    if (!updateCategory) {
       return res
         .status(404)
         .json({ success: false, error: "Category not found" });
     }
 
-    //Update the category
-    category.title = newCategory;
-    const updatedCategory = await category.save();
-
-    res.status(200).json({ success: true, updatedCategory });
+    res.status(200).json({ success: true, updateCategory });
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, error: "Internal server error" });
