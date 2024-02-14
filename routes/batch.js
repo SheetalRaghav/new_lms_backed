@@ -27,16 +27,15 @@ router.post("/add-batch", fetchUser, async (req, res) => {
     const newBatch = new Batch({
       title,
       courseId: course._id,
-      courseDetails: {...course},
+      courseDetails: { ...course },
     });
 
-    await newBatch.save().then((value)=>{
+    await newBatch.save().then((value) => {
       res.status(201).json({
         success: true,
         newBatch: value,
       });
     });
-
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, error: "Internal server error" });
@@ -45,13 +44,11 @@ router.post("/add-batch", fetchUser, async (req, res) => {
 
 router.patch("/edit-batch", fetchUser, async (req, res) => {
   try {
-    const { identity, newTitle } = req.body;
-
-    const updatedBatch = await Batch.findByIdAndUpdate(
-      identity,
-      { title: newTitle },
-      { new: true }
-    );
+    const { identity } = req.body;
+    const updates = req.body;
+    const updatedBatch = await Batch.findByIdAndUpdate(identity, updates, {
+      new: true,
+    });
 
     if (!updatedBatch) {
       return res.status(404).json({ success: false, error: "Batch not found" });
@@ -88,7 +85,9 @@ router.get("/all-batch/:id", fetchUser, async (req, res) => {
   try {
     const identity = req.params.id;
 
-    const batch = await Batch.find({ courseId: identity }).populate('courseId').exec();
+    const batch = await Batch.find({ courseId: identity })
+      .populate("courseId")
+      .exec();
 
     if (!batch || batch.length === 0) {
       return res.status(404).json({ success: false, error: "Batch not found" });
@@ -105,7 +104,7 @@ router.get("/single-batch/:id", fetchUser, async (req, res) => {
   try {
     const identity = req.params.id;
 
-    const batch = await Batch.find({_id: identity});
+    const batch = await Batch.find({ _id: identity });
 
     if (!batch || batch.length === 0) {
       return res.status(404).json({ success: false, error: "Batch not found" });
@@ -117,6 +116,5 @@ router.get("/single-batch/:id", fetchUser, async (req, res) => {
     res.status(500).json({ success: false, error: "Internal server error" });
   }
 });
-
 
 module.exports = router;
