@@ -30,8 +30,6 @@ router.post("/add-batch", fetchUser, async (req, res) => {
       courseDetails: {...course},
     });
 
-    console.log(newBatch,"newBatch");
-
     await newBatch.save().then((value)=>{
       res.status(201).json({
         success: true,
@@ -39,17 +37,6 @@ router.post("/add-batch", fetchUser, async (req, res) => {
       });
     });
 
-    // const batchWithCourseDetails = {
-    //   title: newBatch.title,
-    //   courseId: newBatch.courseId,
-    //   student: newBatch.student,
-    //   courseDetails: newBatch.courseDetails, 
-    //   _id: newBatch._id,
-    //   date: newBatch.date,
-    //   __v: newBatch.__v
-    // };
-
-   
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, error: "Internal server error" });
@@ -81,15 +68,12 @@ router.delete("/delete-batch/:id", fetchUser, async (req, res) => {
   try {
     const identity = req.params.id;
 
-    //Find the batch by ID
     const batch = await Batch.findOne({ _id: identity });
-    console.log(batch, "batch");
 
     if (!batch) {
       return res.status(404).json({ success: false, error: "Batch not found" });
     }
 
-    //Delete the batch
     await batch.deleteOne();
     res
       .status(200)
@@ -106,8 +90,6 @@ router.get("/all-batch/:id", fetchUser, async (req, res) => {
 
     const batch = await Batch.find({ courseId: identity }).populate('courseId').exec();
 
-    console.log(batch, "batch");
-
     if (!batch || batch.length === 0) {
       return res.status(404).json({ success: false, error: "Batch not found" });
     }
@@ -118,5 +100,23 @@ router.get("/all-batch/:id", fetchUser, async (req, res) => {
     res.status(500).json({ success: false, error: "Internal server error" });
   }
 });
+
+router.get("/single-batch/:id", fetchUser, async (req, res) => {
+  try {
+    const identity = req.params.id;
+
+    const batch = await Batch.find({_id: identity});
+
+    if (!batch || batch.length === 0) {
+      return res.status(404).json({ success: false, error: "Batch not found" });
+    }
+
+    res.status(200).json({ success: true, batch });
+  } catch (error) {
+    console.error("Error fetching batch:", error);
+    res.status(500).json({ success: false, error: "Internal server error" });
+  }
+});
+
 
 module.exports = router;
